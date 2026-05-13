@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Matcha Green palette */
+  --color-matcha-50: #f4f8f2;
+  --color-matcha-100: #e4eddf;
+  --color-matcha-200: #cddcc4;
+  --color-matcha-300: #a8c49a;
+  --color-matcha-400: #85aa72;
+  --color-matcha-500: #6b8f5e;
+  --color-matcha-600: #527345;
+  --color-matcha-700: #415b38;
+  --color-matcha-800: #364a30;
+  --color-matcha-900: #2d3e28;
+  --color-matcha-950: #152013;
+}
+
+@layer base {
+  body {
+    @apply bg-matcha-50 text-zinc-800 antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv03";
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight text-zinc-900;
+  }
+
+  a {
+    @apply text-matcha-600 hover:text-matcha-700 transition-colors;
+  }
+
+  ::selection {
+    @apply bg-matcha-200 text-zinc-900;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-matcha-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-matcha-300 rounded-full hover:bg-matcha-400 transition-colors;
+}

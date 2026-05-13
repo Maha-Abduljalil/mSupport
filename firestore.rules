@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isSignedIn() { return request.auth != null; }
+    // Note: For this educational app, we don't strictly require email_verified 
+    // to make it easier for users to test immediately after signup.
+    function isVerified() { return isSignedIn(); } 
+    
+    function isAdmin() { 
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // User Profiles
+    match /users/{userId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      
+      allow create: if isSignedIn() && isOwner(userId) && 
+        isValidId(userId) &&
+        incoming().role == 'user' && 
+        incoming().uid == userId && 
+        incoming().email == request.auth.token.email &&
+        incoming().keys().hasAll(['uid', 'email', 'role', 'createdAt']) &&
+        incoming().keys().size() == 4;
+      
+      allow update: if (isSignedIn() && isOwner(userId) && 
+        incoming().role == existing().role && 
+        incoming().uid == existing().uid &&
+        incoming().email == existing().email) ||
+        (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['role']) && incoming().role == 'admin');
+    }
+
+    // Tickets
+    match /tickets/{ticketId} {
+      function isValidTicket(data) {
+        return data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+               data.description is string && data.description.size() > 0 && data.description.size() <= 5000 &&
+               data.status in ['open', 'in-progress', 'closed'] &&
+               data.userId is string && data.userId.size() <= 128 &&
+               data.createdAt is string;
+      }
+
+      allow get: if isSignedIn() && (isOwner(existing().userId) || isAdmin());
+      allow list: if isSignedIn() && (isOwner(resource.data.userId) || isAdmin());
+
+      allow create: if isSignedIn() && 
+        isValidTicket(incoming()) && 
+        isOwner(incoming().userId) &&
+        incoming().status == 'open' &&
+        incoming().keys().hasAll(['title', 'description', 'status', 'userId', 'userEmail', 'createdAt']);
+
+      allow update: if isSignedIn() && (
+        // Admin update: status only
+        (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) && isValidTicket(incoming())) ||
+        // Owner update: title/desc only if not closed
+        (isOwner(existing().userId) && existing().status != 'closed' && 
+         incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description']) && 
+         isValidTicket(incoming()))
+      );
+
+      allow delete: if isAdmin();
+    }
+  }
+}

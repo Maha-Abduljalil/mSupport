@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuickSupport | Simple Help Desk</title>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-matcha-50 text-slate-900 font-sans">
+    <nav
+      class="h-16 border-b border-matcha-200 bg-white/80 backdrop-blur-md sticky top-0 z-50"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-full flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <img src="/imgs/icon.png" alt="Logo" class="w-8 h-8 object-contain" />
+          <span class="text-slate-900 font-bold tracking-tight text-lg">Support</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a
+            href="/login.html"
+            class="text-xs font-bold text-slate-500 hover:text-matcha-600 transition-colors uppercase tracking-widest"
+            >Sign In</a
+          >
+          <a
+            href="/login.html#register"
+            class="bg-matcha-500 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-matcha-600 transition-all shadow-sm"
+            >Get Started</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="py-32 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+          <span
+            class="inline-block px-3 py-1 bg-matcha-100 text-matcha-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6"
+            >Simple & Fast</span
+          >
+          <h1
+            class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]"
+          >
+            Help desk made <span class="text-matcha-600">simple.</span>
+          </h1>
+          <p
+            class="text-lg text-slate-500 mb-10 leading-relaxed max-w-xl mx-auto"
+          >
+            A clean, easy way to manage support requests. Fast, simple, and
+            built for your team.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="/login.html#register"
+              class="bg-matcha-900 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-matcha-800 transition-all shadow-lg"
+              >Get Started</a
+            >
+            <a
+              href="#features"
+              class="bg-white border border-matcha-200 text-slate-600 px-6 py-3 rounded-xl text-sm font-bold hover:bg-matcha-50 transition-all"
+              >Learn More</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 mb-24">
+        <div class="grid grid-cols-4 gap-4">
+          <div
+            class="bg-white p-6 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1"
+            >
+              Avg. Reply
+            </p>
+            <h3 class="text-2xl font-light text-slate-900">1.2h</h3>
+          </div>
+          <div
+            class="bg-white p-6 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-matcha-500 text-[10px] font-bold uppercase tracking-widest mb-1"
+            >
+              Success Rate
+            </p>
+            <h3 class="text-2xl font-light text-slate-900">99.4%</h3>
+          </div>
+          <div
+            class="bg-white p-6 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1"
+            >
+              Open Requests
+            </p>
+            <h3 class="text-2xl font-light text-slate-900">1.4k</h3>
+          </div>
+          <div
+            class="bg-white p-6 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1"
+            >
+              Integrations
+            </p>
+            <h3 class="text-2xl font-light text-slate-900">45+</h3>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="py-12 border-t border-matcha-200">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+       <img src="/imgs/icon.png" alt="Logo" class="w-8 h-8 object-contain" />
+        <p
+          class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]"
+        > Support
+        </p>
+      </div>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

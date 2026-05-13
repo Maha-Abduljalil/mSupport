@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | QuickSupport</title>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-matcha-50 min-h-screen font-sans flex overflow-hidden">
+    <div
+      id="loading-overlay"
+      class="fixed inset-0 bg-white z-[100] flex items-center justify-center transition-opacity duration-300"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <div
+          class="w-10 h-10 border-2 border-matcha-500 border-t-transparent rounded-full animate-spin"
+        ></div>
+        <p
+          class="text-slate-400 text-[10px] font-black uppercase tracking-widest text-center"
+        >
+          Loading...
+        </p>
+      </div>
+    </div>
+
+    <aside class="w-64 bg-matcha-900 flex-shrink-0 flex flex-col z-50">
+      <div class="p-6 border-b border-matcha-800 flex items-center gap-2">
+        <img src="/imgs/icon.png" alt="Logo" class="w-14 h-14 object-contain" />
+<span class="text-white font-bold tracking-tight text-3xl">Support</span>      </div>
+      <nav class="flex-1 p-4 space-y-1">
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 bg-matcha-500/10 text-matcha-400 rounded-lg text-xs font-bold uppercase tracking-wider"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"
+            ></path>
+          </svg>
+          All Requests
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 text-matcha-300 hover:text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
+        >
+          <svg
+            class="w-4 h-4 opacity-70"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M12 4.354a4 4 0 110 15.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+          Users
+        </a>
+
+        <div class="mt-8 px-4">
+          <p
+            class="text-[10px] font-black uppercase tracking-widest text-matcha-400 mb-3"
+          >
+            Admin Management
+          </p>
+          <div class="space-y-2">
+            <input
+              type="email"
+              id="new-admin-email"
+              placeholder="Add Admin by Email"
+              class="w-full px-3 py-2 bg-matcha-800/50 border border-matcha-700 rounded-lg text-xs text-white placeholder:text-matcha-400 focus:ring-1 focus:ring-matcha-500 outline-none transition-all"
+            />
+            <button
+              id="promote-admin-btn"
+              class="w-full bg-matcha-600 text-white font-bold py-2 rounded-lg text-[10px] uppercase tracking-widest hover:bg-matcha-500 transition-all"
+            >
+              Promote to Admin
+            </button>
+            <p
+              id="promote-message"
+              class="text-[9px] font-bold mt-1 text-center hidden"
+            ></p>
+          </div>
+        </div>
+      </nav>
+      <div class="p-4 border-t border-matcha-800">
+        <div class="flex items-center gap-3 px-2 mb-4">
+          <div
+            class="w-8 h-8 rounded-full bg-matcha-700 flex items-center justify-center text-[10px] font-bold text-white"
+          >
+            AD
+          </div>
+          <div class="overflow-hidden">
+            <p
+              id="admin-display-email"
+              class="text-xs font-bold text-white truncate"
+            ></p>
+            <p
+              class="text-[9px] text-matcha-400 font-bold uppercase tracking-widest"
+            >
+              Administrator
+            </p>
+          </div>
+        </div>
+        <button
+          id="logout-btn"
+          class="w-full h-10 flex items-center justify-center gap-2 text-matcha-400 hover:text-white bg-matcha-800/50 hover:bg-matcha-800 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
+        >
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <header
+        class="h-16 bg-white border-b border-matcha-200 flex items-center justify-between px-8 flex-shrink-0"
+      >
+        <h1 class="text-sm font-bold text-slate-800 uppercase tracking-widest">
+          Admin Dashboard
+        </h1>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <input
+              type="text"
+              id="admin-search"
+              placeholder="Search by title or email..."
+              class="bg-matcha-50 border-none rounded-full py-1.5 px-4 text-[11px] w-64 focus:ring-1 focus:ring-matcha-500 outline-none"
+            />
+          </div>
+          <div class="h-4 w-px bg-matcha-200"></div>
+          <select
+            id="admin-status-filter"
+            class="bg-transparent border-none text-[10px] font-black uppercase text-slate-500 cursor-pointer hover:text-matcha-600 transition-colors outline-none"
+          >
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </header>
+
+      <div class="p-8 flex-1 flex flex-col gap-6 overflow-hidden">
+        <div class="grid grid-cols-4 gap-4 flex-shrink-0">
+          <div
+            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1"
+            >
+              Open Requests
+            </p>
+            <h3
+              id="global-open-count"
+              class="text-3xl font-light text-slate-900 tracking-tight"
+            >
+              0
+            </h3>
+          </div>
+          <div
+            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-matcha-500 text-[10px] font-black uppercase tracking-widest mb-1"
+            >
+              Resolved
+            </p>
+            <h3
+              id="global-closed-count"
+              class="text-3xl font-light text-slate-900 tracking-tight"
+            >
+              0
+            </h3>
+          </div>
+          <div
+            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-matcha-500 text-[10px] font-black uppercase tracking-widest mb-1"
+            >
+              Avg. Response
+            </p>
+            <h3 class="text-3xl font-light text-slate-900 tracking-tight">
+              2.4h
+            </h3>
+          </div>
+          <div
+            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm"
+          >
+            <p
+              class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1"
+            >
+              Performance
+            </p>
+            <h3 class="text-3xl font-light text-slate-900 tracking-tight">
+              14ms
+            </h3>
+          </div>
+        </div>
+
+        <div
+          class="bg-white border border-matcha-200 rounded-xl flex-1 flex flex-col overflow-hidden shadow-sm"
+        >
+          <div
+            class="px-6 py-4 border-b border-matcha-100 flex items-center justify-between bg-matcha-50/50"
+          >
+            <h2
+              class="text-xs font-black text-slate-700 uppercase tracking-widest"
+            >
+              All Requests
+            </h2>
+            <div class="flex gap-2">
+              <button
+                class="px-2 py-1 bg-white border border-matcha-200 rounded text-[9px] font-black text-slate-500 hover:bg-matcha-50 uppercase tracking-tighter transition-all"
+              >
+                Refresh
+              </button>
+              <button
+                class="px-2 py-1 bg-white border border-matcha-200 rounded text-[9px] font-black text-slate-500 hover:bg-matcha-50 uppercase tracking-tighter transition-all"
+              >
+                Export
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-hidden flex-1 overflow-y-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr
+                  class="bg-matcha-50/50 text-slate-500 text-[10px] uppercase font-bold tracking-widest sticky top-0 z-10"
+                >
+                  <th class="px-6 py-3 border-b border-matcha-100">ID</th>
+                  <th class="px-6 py-3 border-b border-matcha-100">
+                    Request Details
+                  </th>
+                  <th class="px-6 py-3 border-b border-matcha-100">Status</th>
+                  <th class="px-6 py-3 border-b border-matcha-100 text-right">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="admin-ticket-list" class="text-sm">
+              </tbody>
+            </table>
+
+            <div id="admin-empty-state" class="hidden p-24 text-center">
+              <p class="text-slate-300 font-bold italic text-sm">
+                No requests match your filters.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+0    <div
+      id="admin-modal"
+      class="fixed inset-0 bg-matcha-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white w-full max-w-xl rounded-xl overflow-hidden shadow-2xl border border-matcha-200"
+      >
+        <div
+          class="p-8 border-b border-matcha-100 bg-matcha-50 flex justify-between items-start"
+        >
+          <div>
+            <span
+              id="modal-ticket-id"
+              class="text-[9px] font-black uppercase tracking-widest text-matcha-600 bg-matcha-50 px-2 py-1 rounded mb-2 inline-block border border-matcha-200"
+            ></span>
+            <h3
+              id="modal-ticket-title"
+              class="text-lg font-bold text-slate-900 leading-tight"
+            ></h3>
+          </div>
+          <button
+            onclick="
+              document.getElementById('admin-modal').classList.add('hidden')
+            "
+            class="bg-white p-2 rounded-lg text-slate-400 hover:text-slate-900 border border-matcha-100 transition-all"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <div class="p-8 space-y-6">
+          <div>
+            <label
+              class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2"
+              >Submitted By</label
+            >
+            <p
+              id="modal-user-email"
+              class="text-xs font-bold text-slate-600 mb-4"
+            ></p>
+            <div class="bg-matcha-50 p-4 rounded-lg border border-matcha-100">
+              <p
+                id="modal-ticket-desc"
+                class="text-xs text-slate-600 leading-relaxed font-medium"
+              ></p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label
+                class="text-[9px] font-black uppercase tracking-widest text-slate-400"
+                >Update Status</label
+              >
+              <select
+                id="modal-status-select"
+                class="w-full bg-matcha-50 border border-matcha-200 rounded-lg px-4 py-2 text-xs font-bold text-slate-800 transition-all outline-none"
+              >
+                <option value="open">Open</option>
+                <option value="in-progress">In Progress</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button
+                id="admin-update-btn"
+                class="w-full bg-matcha-500 text-white font-bold py-2 rounded-lg text-xs uppercase tracking-widest hover:bg-matcha-600 transition-all"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>
