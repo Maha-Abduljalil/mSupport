@@ -1,5 +1,5 @@
 import { 
-    collection, query, onSnapshot, orderBy, updateDoc, doc, getDoc, getDocs, where
+    collection, query, onSnapshot, orderBy, updateDoc, doc, getDoc, getDocs, where, addDoc
 } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db, handleFirestoreError, OperationType } from './firebase.js';
@@ -23,12 +23,16 @@ const els = {
     updateBtn: document.getElementById('admin-update-btn'),
     newAdminEmailInput: document.getElementById('new-admin-email'),
     promoteAdminBtn: document.getElementById('promote-admin-btn'),
-    promoteMessage: document.getElementById('promote-message')
+    promoteMessage: document.getElementById('promote-message'),
+    chatMessages: document.getElementById('admin-chat-messages'),
+    chatForm: document.getElementById('admin-chat-form'),
+    chatInput: document.getElementById('admin-chat-input')
 };
 
 let state = {
     tickets: [],
-    selectedTicketId: null
+    selectedTicketId: null,
+    unsubscribeChat: null
 };
 
 const statusConfig = {
@@ -128,7 +132,68 @@ window.openDetail = (id) => {
     els.modalStatus.value = ticket.status;
     
     els.modal.classList.remove('hidden');
+    setupChatListener(id);
 };
+
+function setupChatListener(ticketId) {
+    if (state.unsubscribeChat) state.unsubscribeChat();
+
+    els.chatMessages.innerHTML = '<div class="text-center py-10"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Loading messages...</p></div>';
+
+    const q = query(
+        collection(db, 'tickets', ticketId, 'messages'),
+        orderBy('createdAt', 'asc')
+    );
+
+    state.unsubscribeChat = onSnapshot(q, (snapshot) => {
+        const messages = snapshot.docs.map(doc => doc.data());
+        renderMessages(messages);
+    });
+}
+
+function renderMessages(messages) {
+    if (messages.length === 0) {
+        els.chatMessages.innerHTML = '<div class="text-center py-10"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">No messages yet.</p></div>';
+        return;
+    }
+
+    els.chatMessages.innerHTML = messages.map(msg => {
+        const isMe = msg.senderRole === 'admin';
+        
+        return `
+        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">${isMe ? 'You (Admin)' : 'User'}</span>
+                <span class="text-[8px] text-slate-300">${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <div class="max-w-[80%] px-3 py-2 rounded-2xl text-xs font-medium shadow-sm ${isMe ? 'bg-matcha-500 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-matcha-100 rounded-tl-none'}">
+                ${msg.text}
+            </div>
+        </div>`;
+    }).join('');
+    
+    els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+}
+
+els.chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = els.chatInput.value.trim();
+    if (!text || !state.selectedTicketId) return;
+
+    els.chatInput.value = '';
+    
+    try {
+        await addDoc(collection(db, 'tickets', state.selectedTicketId, 'messages'), {
+            text,
+            senderId: auth.currentUser.uid,
+            senderEmail: auth.currentUser.email,
+            senderRole: 'admin',
+            createdAt: new Date().toISOString()
+        });
+    } catch (error) {
+        handleFirestoreError(error, OperationType.CREATE, `tickets/${state.selectedTicketId}/messages`);
+    }
+});
 
 els.updateBtn.addEventListener('click', async () => {
     if (!state.selectedTicketId) return;

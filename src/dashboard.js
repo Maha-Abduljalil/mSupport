@@ -19,12 +19,23 @@ const els = {
     userRoleDisp: document.getElementById('user-display-role'),
     statTotal: document.getElementById('stat-total'),
     statOpen: document.getElementById('stat-open'),
-    statClosed: document.getElementById('stat-closed')
+    statClosed: document.getElementById('stat-closed'),
+    detailModal: document.getElementById('ticket-detail-modal'),
+    detailId: document.getElementById('detail-ticket-id'),
+    detailTitle: document.getElementById('detail-ticket-title'),
+    detailStatus: document.getElementById('detail-ticket-status'),
+    detailDesc: document.getElementById('detail-ticket-desc'),
+    detailDate: document.getElementById('detail-ticket-date'),
+    chatMessages: document.getElementById('chat-messages'),
+    chatForm: document.getElementById('chat-form'),
+    chatInput: document.getElementById('chat-input')
 };
 
 let state = {
     currentUser: null,
-    tickets: []
+    tickets: [],
+    selectedTicketId: null,
+    unsubscribeChat: null
 };
 
 const statusConfig = {
@@ -78,7 +89,7 @@ function renderTickets() {
         const config = statusConfig[t.status] || statusConfig.default;
         
         return `
-        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
+        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group cursor-pointer" onclick="openTicketDetail('${t.id}')">
             <td class="px-6 py-4 font-mono text-[10px] text-blue-600 font-bold">#${t.id.slice(0, 8)}</td>
             <td class="px-6 py-4">
                 <p class="font-bold text-slate-800 text-xs">${t.title}</p>
@@ -95,6 +106,84 @@ function renderTickets() {
         </tr>`;
     }).join('');
 }
+
+window.openTicketDetail = (id) => {
+    const ticket = state.tickets.find(t => t.id === id);
+    if (!ticket) return;
+
+    state.selectedTicketId = id;
+    els.detailId.innerText = `#${id}`;
+    els.detailTitle.innerText = ticket.title;
+    els.detailDesc.innerText = ticket.description;
+    els.detailDate.innerText = new Date(ticket.createdAt).toLocaleString();
+    
+    const config = statusConfig[ticket.status] || statusConfig.default;
+    els.detailStatus.innerHTML = `<span class="px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest ${config.class}">${config.label}</span>`;
+
+    els.detailModal.classList.remove('hidden');
+    setupChatListener(id);
+};
+
+function setupChatListener(ticketId) {
+    if (state.unsubscribeChat) state.unsubscribeChat();
+
+    els.chatMessages.innerHTML = '<div class="text-center py-10"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Loading messages...</p></div>';
+
+    const q = query(
+        collection(db, 'tickets', ticketId, 'messages'),
+        orderBy('createdAt', 'asc')
+    );
+
+    state.unsubscribeChat = onSnapshot(q, (snapshot) => {
+        const messages = snapshot.docs.map(doc => doc.data());
+        renderMessages(messages);
+    });
+}
+
+function renderMessages(messages) {
+    if (messages.length === 0) {
+        els.chatMessages.innerHTML = '<div class="text-center py-10"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">No messages yet.</p></div>';
+        return;
+    }
+
+    els.chatMessages.innerHTML = messages.map(msg => {
+        const isMe = msg.senderId === state.currentUser.uid;
+        const isAdmin = msg.senderRole === 'admin';
+        
+        return `
+        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">${isAdmin ? 'Admin' : (isMe ? 'You' : 'Support')}</span>
+                <span class="text-[8px] text-slate-300">${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <div class="max-w-[80%] px-3 py-2 rounded-2xl text-xs font-medium shadow-sm ${isMe ? 'bg-matcha-500 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-matcha-100 rounded-tl-none'}">
+                ${msg.text}
+            </div>
+        </div>`;
+    }).join('');
+    
+    els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+}
+
+els.chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = els.chatInput.value.trim();
+    if (!text || !state.selectedTicketId) return;
+
+    els.chatInput.value = '';
+    
+    try {
+        await addDoc(collection(db, 'tickets', state.selectedTicketId, 'messages'), {
+            text,
+            senderId: state.currentUser.uid,
+            senderEmail: state.currentUser.email,
+            senderRole: 'user',
+            createdAt: new Date().toISOString()
+        });
+    } catch (error) {
+        handleFirestoreError(error, OperationType.CREATE, `tickets/${state.selectedTicketId}/messages`);
+    }
+});
 
 function updateStats() {
     els.statTotal.innerText = state.tickets.length;

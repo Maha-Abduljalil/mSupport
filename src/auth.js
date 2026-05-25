@@ -86,8 +86,8 @@ els.form.addEventListener('submit', async (e) => {
 
 updateUI();
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user && window.location.pathname !== '/login.html') {
-
+       await redirectUser(user.uid);
     }
 });

@@ -5,7 +5,6 @@
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Matcha Green palette */
   --color-matcha-50: #f4f8f2;
   --color-matcha-100: #e4eddf;
   --color-matcha-200: #cddcc4;
@@ -38,7 +37,6 @@
   }
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

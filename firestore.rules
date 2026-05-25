@@ -71,6 +71,14 @@ service cloud.firestore {
       );
 
       allow delete: if isAdmin();
+
+      // Messages
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && (isOwner(get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId) || isAdmin());
+        allow create: if isSignedIn() && (isOwner(get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId) || isAdmin()) &&
+          incoming().keys().hasAll(['text', 'senderId', 'senderEmail', 'senderRole', 'createdAt']) &&
+          incoming().senderId == request.auth.uid;
+      }
     }
   }
 }

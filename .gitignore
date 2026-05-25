@@ -6,3 +6,5 @@ coverage/
 *.log
 .env*
 !.env.example
+desktop.ini
+firebase-applet-config.json
