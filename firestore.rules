@@ -1,15 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Default Deny
+
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Helpers
+
     function isSignedIn() { return request.auth != null; }
-    // Note: For this educational app, we don't strictly require email_verified 
-    // to make it easier for users to test immediately after signup.
+
     function isVerified() { return isSignedIn(); } 
     
     function isAdmin() { 
@@ -22,7 +21,7 @@ service cloud.firestore {
     function incoming() { return request.resource.data; }
     function existing() { return resource.data; }
 
-    // User Profiles
+
     match /users/{userId} {
       allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
       allow list: if isAdmin();
@@ -42,7 +41,7 @@ service cloud.firestore {
         (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['role']) && incoming().role == 'admin');
     }
 
-    // Tickets
+
     match /tickets/{ticketId} {
       function isValidTicket(data) {
         return data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
@@ -62,9 +61,9 @@ service cloud.firestore {
         incoming().keys().hasAll(['title', 'description', 'status', 'userId', 'userEmail', 'createdAt']);
 
       allow update: if isSignedIn() && (
-        // Admin update: status only
+
         (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) && isValidTicket(incoming())) ||
-        // Owner update: title/desc only if not closed
+
         (isOwner(existing().userId) && existing().status != 'closed' && 
          incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description']) && 
          isValidTicket(incoming()))
@@ -72,12 +71,14 @@ service cloud.firestore {
 
       allow delete: if isAdmin();
 
-      // Messages
+
       match /messages/{messageId} {
         allow read: if isSignedIn() && (isOwner(get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId) || isAdmin());
         allow create: if isSignedIn() && (isOwner(get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId) || isAdmin()) &&
-          incoming().keys().hasAll(['text', 'senderId', 'senderEmail', 'senderRole', 'createdAt']) &&
-          incoming().senderId == request.auth.uid;
+          incoming().keys().hasAll(['senderId', 'senderEmail', 'senderRole', 'createdAt']) &&
+          incoming().keys().hasAny(['text', 'imageData']) &&
+          incoming().senderId == request.auth.uid &&
+          (incoming().keys().hasAny(['imageData']) ? incoming().imageData is string : true);
       }
     }
   }

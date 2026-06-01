@@ -28,14 +28,20 @@ const els = {
     detailDate: document.getElementById('detail-ticket-date'),
     chatMessages: document.getElementById('chat-messages'),
     chatForm: document.getElementById('chat-form'),
-    chatInput: document.getElementById('chat-input')
+    chatInput: document.getElementById('chat-input'),
+    chatImageBtn: document.getElementById('chat-image-btn'),
+    chatImageInput: document.getElementById('chat-image-input'),
+    chatImagePreviewContainer: document.getElementById('chat-image-preview-container'),
+    chatImagePreview: document.getElementById('chat-image-preview'),
+    chatImageRemove: document.getElementById('chat-image-remove')
 };
 
 let state = {
     currentUser: null,
     tickets: [],
     selectedTicketId: null,
-    unsubscribeChat: null
+    unsubscribeChat: null,
+    selectedChatImage: null
 };
 
 const statusConfig = {
@@ -150,36 +156,170 @@ function renderMessages(messages) {
         const isMe = msg.senderId === state.currentUser.uid;
         const isAdmin = msg.senderRole === 'admin';
         
+        let imageHtml = '';
+        if (msg.imageData) {
+            imageHtml = `<img src="${msg.imageData}" alt="Attached Image" class="mt-2 rounded max-h-48 object-contain border border-matcha-100 cursor-pointer hover:opacity-90 transition-opacity" onclick="window.openLightbox('${msg.imageData}')" />`;
+        }
+
         return `
-        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">${isAdmin ? 'Admin' : (isMe ? 'You' : 'Support')}</span>
-                <span class="text-[8px] text-slate-300">${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
-            <div class="max-w-[80%] px-3 py-2 rounded-2xl text-xs font-medium shadow-sm ${isMe ? 'bg-matcha-500 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-matcha-100 rounded-tl-none'}">
-                ${msg.text}
-            </div>
-        </div>`;
+<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+    <div class="flex items-center gap-2 mb-1">
+        <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">${isAdmin ? 'Admin' : (isMe ? 'You' : 'Support')}</span>
+        <span class="text-[8px] text-slate-300">${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+    </div>
+
+    <div class="max-w-[80%] flex flex-col gap-2">
+        ${msg.text ? `
+        <div class="px-3 py-2 rounded-2xl text-xs font-medium shadow-sm ${
+            isMe
+                ? 'bg-matcha-500 text-white rounded-tr-none'
+                : 'bg-white text-slate-700 border border-matcha-100 rounded-tl-none'
+        }">
+            ${msg.text}
+        </div>
+        ` : ''}
+
+        ${msg.imageData ? `
+        <img 
+            src="${msg.imageData}" 
+            alt="Attached Image"
+            class="rounded-xl max-h-48 object-contain cursor-pointer hover:opacity-90 transition-opacity shadow-sm"
+            onclick="window.openLightbox('${msg.imageData}')"
+        />
+        ` : ''}
+    </div>
+</div>
+`;
     }).join('');
     
     els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
 }
 
+els.chatImageBtn.addEventListener('click', () => {
+    els.chatImageInput.click();
+});
+
+els.chatImageRemove.addEventListener('click', () => {
+    els.chatImageInput.value = '';
+    state.selectedChatImage = null;
+    els.chatImagePreviewContainer.classList.add('hidden');
+});
+
+els.chatImageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert("Image is too large. Please select an image under 5MB.");
+        els.chatImageInput.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+            state.selectedChatImage = dataUrl;
+            els.chatImagePreview.src = dataUrl;
+            els.chatImagePreviewContainer.classList.remove('hidden');
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+
+window.openLightbox = (src) => {
+    const overlay = document.getElementById('lightbox-overlay');
+    const img = document.getElementById('lightbox-image');
+    if (!overlay || !img) return;
+    
+    img.src = src;
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+    
+
+    setTimeout(() => {
+        overlay.classList.remove('opacity-0');
+        overlay.classList.add('opacity-100');
+        img.classList.remove('scale-95');
+        img.classList.add('scale-100');
+    }, 10);
+};
+
+document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+document.getElementById('lightbox-overlay')?.addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox-overlay') closeLightbox();
+});
+
+function closeLightbox() {
+    const overlay = document.getElementById('lightbox-overlay');
+    const img = document.getElementById('lightbox-image');
+    if (!overlay || !img) return;
+
+    overlay.classList.remove('opacity-100');
+    overlay.classList.add('opacity-0');
+    img.classList.remove('scale-100');
+    img.classList.add('scale-95');
+    
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        img.src = '';
+    }, 300);
+}
+
 els.chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = els.chatInput.value.trim();
-    if (!text || !state.selectedTicketId) return;
+    if ((!text && !state.selectedChatImage) || !state.selectedTicketId) return;
 
     els.chatInput.value = '';
+    const imageToUpload = state.selectedChatImage;
+    
+
+    els.chatImageInput.value = '';
+    state.selectedChatImage = null;
+    els.chatImagePreviewContainer.classList.add('hidden');
     
     try {
-        await addDoc(collection(db, 'tickets', state.selectedTicketId, 'messages'), {
+        const messageData = {
             text,
             senderId: state.currentUser.uid,
             senderEmail: state.currentUser.email,
             senderRole: 'user',
             createdAt: new Date().toISOString()
-        });
+        };
+        
+        if (imageToUpload) {
+            messageData.imageData = imageToUpload;
+        }
+
+        await addDoc(collection(db, 'tickets', state.selectedTicketId, 'messages'), messageData);
     } catch (error) {
         handleFirestoreError(error, OperationType.CREATE, `tickets/${state.selectedTicketId}/messages`);
     }

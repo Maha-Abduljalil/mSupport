@@ -16,14 +16,6 @@ export const OperationType = {
   WRITE: 'write',
 };
 
-/**
- * @typedef {Object} FirestoreErrorInfo
- * @property {string} error
- * @property {string} operationType
- * @property {string|null} path
- * @property {Object} authInfo
- */
-
 
 function getFriendlyMessage(error, operationType) {
   const msg = error?.message || '';

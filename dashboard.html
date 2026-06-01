@@ -1,458 +1,317 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | mSupport</title>
     <link rel="icon" type="image/png" href="/imgs/icon.png" />
     <link rel="stylesheet" href="/src/index.css" />
-  </head>
-  <body class="bg-matcha-50 h-screen w-screen font-sans flex overflow-hidden">
-    <div
-      id="loading-overlay"
-      class="fixed inset-0 bg-white z-[100] flex items-center justify-center transition-opacity duration-300"
-    >
-      <div class="flex flex-col items-center gap-4">
-        <div
-          class="w-10 h-10 border-2 border-matcha-500 border-t-transparent rounded-full animate-spin"
-        ></div>
-        <p
-          class="text-slate-400 text-[10px] font-black uppercase tracking-widest"
-        >
-          Loading...
-        </p>
-      </div>
+</head>
+
+<body class="bg-matcha-50 h-screen w-screen font-sans flex overflow-hidden">
+    <div id="loading-overlay"
+        class="fixed inset-0 bg-white z-[100] flex items-center justify-center transition-opacity duration-300">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-10 h-10 border-2 border-matcha-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                Loading...
+            </p>
+        </div>
     </div>
 
     <aside class="w-64 bg-matcha-900 flex-shrink-0 flex flex-col z-50">
-      <div class="p-6 border-b border-matcha-800 flex items-center gap-2">
-        <img src="/imgs/icon.png" alt="Logo" class="w-14 h-14 object-contain" />
-        <span class="text-white font-bold tracking-tight text-3xl">Support</span>
-      </div>
-      <nav class="flex-1 p-4 space-y-1">
-        <a
-          href="#"
-          class="flex items-center gap-3 px-4 py-3 bg-matcha-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider"
-        >
-          <svg
-            class="w-4 h-4 opacity-70"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-          My Requests
-        </a>
-        <button
-          onclick="
-            document.getElementById('ticket-modal').classList.remove('hidden')
-          "
-          class="w-full flex items-center gap-3 px-4 py-3 text-matcha-300 hover:text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors"
-        >
-          <svg
-            class="w-4 h-4 opacity-70"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M12 4v16m8-8H4"
-            ></path>
-          </svg>
-          New Request
-        </button>
-      </nav>
-      <div class="p-4 border-t border-matcha-800">
-        <div class="flex items-center gap-3 px-2 mb-4">
-          <div
-            class="w-8 h-8 rounded-full bg-matcha-800 flex items-center justify-center text-[10px] font-bold text-matcha-300 border border-matcha-700"
-          >
-            U
-          </div>
-          <div class="overflow-hidden">
-            <p
-              id="user-display-email"
-              class="text-xs font-bold text-white truncate"
-            ></p>
-            <p
-              id="user-display-role"
-              class="text-[9px] text-matcha-400 font-bold uppercase tracking-widest"
-            ></p>
-          </div>
+        <div class="p-6 border-b border-matcha-800 flex items-center gap-2">
+            <img src="/imgs/icon.png" alt="Logo" class="w-14 h-14 object-contain" />
+            <span class="text-white font-bold tracking-tight text-3xl">Support</span>
         </div>
-        <button
-          id="logout-btn"
-          class="w-full h-10 flex items-center justify-center gap-2 text-matcha-400 hover:text-white bg-matcha-800/50 hover:bg-matcha-800 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
-        >
-          Sign Out
-        </button>
-      </div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="#"
+                class="flex items-center gap-3 px-4 py-3 bg-matcha-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+                My Requests
+            </a>
+            <button onclick="
+            document.getElementById('ticket-modal').classList.remove('hidden')
+          " class="w-full flex items-center gap-3 px-4 py-3 text-matcha-300 hover:text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Request
+            </button>
+        </nav>
+        <div class="p-4 border-t border-matcha-800">
+            <div class="flex items-center gap-3 px-2 mb-4">
+                <div
+                    class="w-8 h-8 rounded-full bg-matcha-800 flex items-center justify-center text-[10px] font-bold text-matcha-300 border border-matcha-700">
+                    U
+                </div>
+                <div class="overflow-hidden">
+                    <p id="user-display-email" class="text-xs font-bold text-white truncate"></p>
+                    <p id="user-display-role" class="text-[9px] text-matcha-400 font-bold uppercase tracking-widest">
+                    </p>
+                </div>
+            </div>
+            <button id="logout-btn"
+                class="w-full h-10 flex items-center justify-center gap-2 text-matcha-400 hover:text-white bg-matcha-800/50 hover:bg-matcha-800 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
+                Sign Out
+            </button>
+        </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-full overflow-hidden">
-      <header
-        class="flex-none h-16 bg-white border-b border-matcha-200 flex items-center justify-between px-8"
-      >
-        <div class="flex items-center gap-4">
-          <h2
-            class="text-sm font-bold text-slate-800 uppercase tracking-widest"
-          >
-            Dashboard
-          </h2>
-          <div class="h-4 w-px bg-matcha-200"></div>
-          <select
-            id="status-filter"
-            class="bg-transparent border-none text-[10px] uppercase font-black text-slate-500 outline-none cursor-pointer hover:text-matcha-600 transition-colors"
-          >
-            <option value="all">All</option>
-            <option value="open">Open</option>
-            <option value="in-progress">In Progress</option>
-            <option value="closed">Done</option>
-          </select>
-        </div>
-        <div class="flex gap-4">
-          <div
-            class="flex items-center gap-2 px-3 py-1 bg-matcha-50 border border-matcha-100 rounded-lg"
-          >
-            <span
-              class="text-[9px] font-black text-slate-400 uppercase tracking-widest"
-              >Open Requests</span
-            >
-            <span id="stat-open" class="text-xs font-black text-matcha-600"
-              >0</span
-            >
-          </div>
-        </div>
-      </header>
+        <header class="flex-none h-16 bg-white border-b border-matcha-200 flex items-center justify-between px-8">
+            <div class="flex items-center gap-4">
+                <h2 class="text-sm font-bold text-slate-800 uppercase tracking-widest">
+                    Dashboard
+                </h2>
+                <div class="h-4 w-px bg-matcha-200"></div>
+                <select id="status-filter"
+                    class="bg-transparent border-none text-[10px] uppercase font-black text-slate-500 outline-none cursor-pointer hover:text-matcha-600 transition-colors">
+                    <option value="all">All</option>
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="closed">Done</option>
+                </select>
+            </div>
+            <div class="flex gap-4">
+                <div class="flex items-center gap-2 px-3 py-1 bg-matcha-50 border border-matcha-100 rounded-lg">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Open Requests</span>
+                    <span id="stat-open" class="text-xs font-black text-matcha-600">0</span>
+                </div>
+            </div>
+        </header>
 
-      <div class="p-8 flex-1 flex flex-col gap-6 overflow-hidden min-h-0 h-full">
-        <div class="flex-none grid grid-cols-3 gap-6">
-          <div
-            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm"
-          >
-            <p
-              class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1"
-            >
-              Total
-            </p>
-            <h3
-              id="stat-total"
-              class="text-3xl font-light text-slate-900 tracking-tight"
-            >
-              0
-            </h3>
-          </div>
-          <div
-            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm border-l-4 border-l-orange-400"
-          >
-            <p
-              class="text-orange-500 text-[10px] font-black uppercase tracking-widest mb-1"
-            >
-              Needs Attention
-            </p>
-            <h3
-              class="text-3xl font-light text-slate-900 tracking-tight"
-              id="open-stat-proxy"
-            >
-              0
-            </h3>
-          </div>
-          <div
-            class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm border-l-4 border-l-matcha-500"
-          >
-            <p
-              class="text-matcha-500 text-[10px] font-black uppercase tracking-widest mb-1"
-            >
-              Resolved
-            </p>
-            <h3
-              id="stat-closed"
-              class="text-3xl font-light text-slate-900 tracking-tight"
-            >
-              0
-            </h3>
-          </div>
-        </div>
+        <div class="p-8 flex-1 flex flex-col gap-6 overflow-hidden min-h-0 h-full">
+            <div class="flex-none grid grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm">
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Total
+                    </p>
+                    <h3 id="stat-total" class="text-3xl font-light text-slate-900 tracking-tight">
+                        0
+                    </h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm border-l-4 border-l-orange-400">
+                    <p class="text-orange-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Needs Attention
+                    </p>
+                    <h3 class="text-3xl font-light text-slate-900 tracking-tight" id="open-stat-proxy">
+                        0
+                    </h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-matcha-200 shadow-sm border-l-4 border-l-matcha-500">
+                    <p class="text-matcha-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Resolved
+                    </p>
+                    <h3 id="stat-closed" class="text-3xl font-light text-slate-900 tracking-tight">
+                        0
+                    </h3>
+                </div>
+            </div>
 
-        <div
-          class="bg-white border border-matcha-200 rounded-xl flex-1 flex flex-col overflow-hidden shadow-sm min-h-0 h-full"
-        >
-          <div
-            class="flex-none px-6 py-4 border-b border-matcha-100 flex items-center justify-between bg-matcha-50/30"
-          >
-            <h2
-              class="text-xs font-black text-slate-700 uppercase tracking-widest"
-            >
-              Your Requests
-            </h2>
-            <span class="text-[10px] font-bold text-slate-400 italic"
-              >Live updates</span
-            >
-          </div>
+            <div
+                class="bg-white border border-matcha-200 rounded-xl flex-1 flex flex-col overflow-hidden shadow-sm min-h-0 h-full">
+                <div
+                    class="flex-none px-6 py-4 border-b border-matcha-100 flex items-center justify-between bg-matcha-50/30">
+                    <h2 class="text-xs font-black text-slate-700 uppercase tracking-widest">
+                        Your Requests
+                    </h2>
+                    <span class="text-[10px] font-bold text-slate-400 italic">Live updates</span>
+                </div>
 
-          <div id="ticket-list-container" class="flex-1 overflow-y-auto min-h-0 h-full">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr
-                  class="bg-matcha-50/50 text-slate-500 text-[10px] uppercase font-black tracking-widest sticky top-0 z-10"
-                >
-                  <th class="px-6 py-3 border-b border-matcha-100">ID</th>
-                  <th class="px-6 py-3 border-b border-matcha-100">Subject</th>
-                  <th class="px-6 py-3 border-b border-matcha-100">Status</th>
-                  <th class="px-6 py-3 border-b border-matcha-100 text-right">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody id="ticket-list" class="text-sm">
-              </tbody>
-            </table>
+                <div id="ticket-list-container" class="flex-1 overflow-y-auto min-h-0 h-full">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-matcha-50/50 text-slate-500 text-[10px] uppercase font-black tracking-widest sticky top-0 z-10">
+                                <th class="px-6 py-3 border-b border-matcha-100">ID</th>
+                                <th class="px-6 py-3 border-b border-matcha-100">Subject</th>
+                                <th class="px-6 py-3 border-b border-matcha-100">Status</th>
+                                <th class="px-6 py-3 border-b border-matcha-100 text-right">
+                                    Date
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticket-list" class="text-sm">
+                        </tbody>
+                    </table>
 
-            <div id="empty-state" class="p-20 text-center space-y-3 hidden">
-              <p class="text-slate-300 font-bold italic">No requests found.</p>
-              <button
-                onclick="
+                    <div id="empty-state" class="p-20 text-center space-y-3 hidden">
+                        <p class="text-slate-300 font-bold italic">No requests found.</p>
+                        <button onclick="
                   document
                     .getElementById('ticket-modal')
                     .classList.remove('hidden')
-                "
-                class="text-matcha-600 text-[10px] font-black uppercase underline tracking-widest"
-              >
-                Create Your First Request
-              </button>
+                " class="text-matcha-600 text-[10px] font-black uppercase underline tracking-widest">
+                            Create Your First Request
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </main>
 
-    <div
-      id="ticket-modal"
-      class="fixed inset-0 bg-matcha-900/40 backdrop-blur-[2px] z-[100] flex items-center justify-center p-4 hidden"
-    >
-      <div
-        class="bg-white w-full max-w-lg rounded-xl overflow-hidden shadow-2xl border border-matcha-200 transition-all"
-      >
+    <div id="ticket-modal"
+        class="fixed inset-0 bg-matcha-900/40 backdrop-blur-[2px] z-[100] flex items-center justify-center p-4 hidden">
         <div
-          class="px-8 py-6 border-b border-matcha-100 bg-matcha-50 flex justify-between items-center"
-        >
-          <h3
-            class="text-sm font-bold text-slate-800 uppercase tracking-widest"
-          >
-            New Request
-          </h3>
-          <button
-            onclick="
+            class="bg-white w-full max-w-lg rounded-xl overflow-hidden shadow-2xl border border-matcha-200 transition-all">
+            <div class="px-8 py-6 border-b border-matcha-100 bg-matcha-50 flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest">
+                    New Request
+                </h3>
+                <button onclick="
               document.getElementById('ticket-modal').classList.add('hidden')
-            "
-            class="text-slate-400 hover:text-slate-900 transition-colors"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.5"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+            " class="text-slate-400 hover:text-slate-900 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="ticket-form" class="p-8 space-y-5">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Title</label>
+                    <input type="text" id="ticket-title" required placeholder="What do you need help with?"
+                        class="w-full px-4 py-2.5 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-sm" />
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Details</label>
+                    <textarea id="ticket-desc" required rows="4" placeholder="Tell us more about your issue"
+                        class="w-full px-4 py-2.5 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-sm resize-none"></textarea>
+                </div>
+                <button type="submit" id="submit-ticket-btn"
+                    class="w-full bg-matcha-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest hover:bg-matcha-600 transition-all shadow-md active:scale-[0.98]">
+                    Send Request
+                </button>
+            </form>
         </div>
-        <form id="ticket-form" class="p-8 space-y-5">
-          <div class="space-y-1">
-            <label
-              class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
-              >Title</label
-            >
-            <input
-              type="text"
-              id="ticket-title"
-              required
-              placeholder="What do you need help with?"
-              class="w-full px-4 py-2.5 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-sm"
-            />
-          </div>
-          <div class="space-y-1">
-            <label
-              class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
-              >Details</label
-            >
-            <textarea
-              id="ticket-desc"
-              required
-              rows="4"
-              placeholder="Tell us more about your issue"
-              class="w-full px-4 py-2.5 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-sm resize-none"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            id="submit-ticket-btn"
-            class="w-full bg-matcha-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest hover:bg-matcha-600 transition-all shadow-md active:scale-[0.98]"
-          >
-            Send Request
-          </button>
-        </form>
-      </div>
     </div>
 
-    <div
-      id="ticket-detail-modal"
-      class="fixed inset-0 bg-matcha-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden"
-    >
-      <div
-        class="bg-white w-full max-w-2xl h-[600px] rounded-xl overflow-hidden shadow-2xl border border-matcha-200 flex flex-col"
-      >
-        <!-- Header -->
+    <div id="ticket-detail-modal"
+        class="fixed inset-0 bg-matcha-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
         <div
-          class="p-6 border-b border-matcha-100 bg-matcha-50 flex justify-between items-start flex-none"
-        >
-          <div class="flex-1">
-            <span
-              id="detail-ticket-id"
-              class="text-[9px] font-black uppercase tracking-widest text-matcha-600 bg-matcha-50 px-2 py-1 rounded mb-2 inline-block border border-matcha-200"
-              >#ID</span
-            >
-            <h3
-              id="detail-ticket-title"
-              class="text-lg font-bold text-slate-900 leading-tight"
-            >
-              Ticket Title
-            </h3>
-            <div id="detail-ticket-status" class="mt-2"></div>
-          </div>
-          <button
-            onclick="document.getElementById('ticket-detail-modal').classList.add('hidden')"
-            class="bg-white p-2 rounded-lg text-slate-400 hover:text-slate-900 border border-matcha-100 transition-all"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.5"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        </div>
+            class="bg-white w-full max-w-2xl h-[600px] rounded-xl overflow-hidden shadow-2xl border border-matcha-200 flex flex-col">
 
-        <div class="flex-1 flex overflow-hidden">
-          <div
-            class="w-64 border-r border-matcha-100 p-6 bg-matcha-50/30 overflow-y-auto"
-          >
-            <label
-              class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2"
-              >Description</label
-            >
-            <p
-              id="detail-ticket-desc"
-              class="text-xs text-slate-600 leading-relaxed font-medium mb-6"
-            >
-              Description content
-            </p>
-
-            <label
-              class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2"
-              >Created At</label
-            >
-            <p
-              id="detail-ticket-date"
-              class="text-xs font-bold text-slate-600 mb-6"
-            ></p>
-          </div>
-
-          <div class="flex-1 flex flex-col bg-white">
-            <div
-              class="p-4 border-b border-matcha-50 bg-white flex justify-between items-center"
-            >
-              <h4
-                class="text-[10px] font-black uppercase tracking-widest text-slate-500"
-              >
-                Live Chat
-              </h4>
-              <span
-                class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"
-              ></span>
-            </div>
-
-            <div
-              id="chat-messages"
-              class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50"
-            >
-              <div class="text-center py-10">
-                <p
-                  class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"
-                >
-                  Loading messages...
-                </p>
-              </div>
-            </div>
-
-            <form id="chat-form" class="p-4 border-t border-matcha-100 bg-white">
-              <div class="flex gap-2">
-                <input
-                  type="text"
-                  id="chat-input"
-                  placeholder="Type your message..."
-                  class="flex-1 px-4 py-2 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-xs"
-                  autocomplete="off"
-                />
-                <button
-                  type="submit"
-                  class="bg-matcha-500 text-white p-2 rounded-lg hover:bg-matcha-600 transition-all shadow-sm active:scale-95 flex items-center justify-center"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2.5"
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    ></path>
-                  </svg>
+            <div class="p-6 border-b border-matcha-100 bg-matcha-50 flex justify-between items-start flex-none">
+                <div class="flex-1">
+                    <span id="detail-ticket-id"
+                        class="text-[9px] font-black uppercase tracking-widest text-matcha-600 bg-matcha-50 px-2 py-1 rounded mb-2 inline-block border border-matcha-200">#ID</span>
+                    <h3 id="detail-ticket-title" class="text-lg font-bold text-slate-900 leading-tight">
+                        Ticket Title
+                    </h3>
+                    <div id="detail-ticket-status" class="mt-2"></div>
+                </div>
+                <button onclick="document.getElementById('ticket-detail-modal').classList.add('hidden')"
+                    class="bg-white p-2 rounded-lg text-slate-400 hover:text-slate-900 border border-matcha-100 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
                 </button>
-              </div>
-            </form>
-          </div>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <div class="w-64 border-r border-matcha-100 p-6 bg-matcha-50/30 overflow-y-auto">
+                    <label
+                        class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">Description</label>
+                    <p id="detail-ticket-desc" class="text-xs text-slate-600 leading-relaxed font-medium mb-6">
+                        Description content
+                    </p>
+
+                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">Created
+                        At</label>
+                    <p id="detail-ticket-date" class="text-xs font-bold text-slate-600 mb-6"></p>
+                </div>
+
+                <div class="flex-1 flex flex-col bg-white">
+                    <div class="p-4 border-b border-matcha-50 bg-white flex justify-between items-center">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                            Live Chat
+                        </h4>
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+                        <div class="text-center py-10">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                Loading messages...
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="chat-form" class="p-4 border-t border-matcha-100 bg-white relative">
+                        <div id="chat-image-preview-container"
+                            class="hidden absolute bottom-full left-0 mb-2 ml-4 p-2 bg-white border border-matcha-200 rounded-lg shadow-lg">
+                            <div class="relative">
+                                <img id="chat-image-preview" src="" alt="Preview"
+                                    class="h-20 w-auto rounded object-cover border border-matcha-100" />
+                                <button type="button" id="chat-image-remove"
+                                    class="absolute -top-2 -right-2 bg-white text-slate-400 hover:text-red-500 rounded-full border border-matcha-200 p-0.5 shadow-sm transition-colors">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="file" id="chat-image-input" accept="image/*" class="hidden" />
+                            <button type="button" id="chat-image-btn"
+                                class="text-slate-400 hover:text-matcha-600 p-2 rounded-lg transition-colors border border-transparent hover:bg-matcha-50 focus:outline-none flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </button>
+                            <input type="text" id="chat-input" placeholder="Type your message..."
+                                class="flex-1 px-4 py-2 bg-matcha-50 border border-matcha-200 rounded-lg focus:ring-2 focus:ring-matcha-500 outline-none text-xs"
+                                autocomplete="off" />
+                            <button type="submit"
+                                class="bg-matcha-500 text-white p-2 rounded-lg hover:bg-matcha-600 transition-all shadow-sm active:scale-95 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+
+
+    <div id="lightbox-overlay"
+        class="fixed inset-0 bg-black/90 z-[200] hidden items-center justify-center backdrop-blur-sm transition-all duration-300 opacity-0">
+        <button id="lightbox-close"
+            class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors bg-black/50 hover:bg-black/80 rounded-full p-2 backdrop-blur-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <img id="lightbox-image" src="" alt="Full size"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform duration-300 transform scale-95" />
     </div>
 
     <script type="module" src="/src/dashboard.js"></script>
     <script>
-      const observer = new MutationObserver(() => {
-        const proxy = document.getElementById("open-stat-proxy");
-        const source = document.getElementById("stat-open");
-        if (proxy && source) {
-          proxy.innerText = source.innerText;
+        const observer = new MutationObserver(() => {
+            const proxy = document.getElementById("open-stat-proxy");
+            const source = document.getElementById("stat-open");
+            if (proxy && source) {
+                proxy.innerText = source.innerText;
+            }
+        });
+        const sourceElem = document.getElementById("stat-open");
+        if (sourceElem) {
+            observer.observe(sourceElem, { childList: true });
         }
-      });
-      const sourceElem = document.getElementById("stat-open");
-      if (sourceElem) {
-        observer.observe(sourceElem, { childList: true });
-      }
     </script>
-  </body>
+</body>
+
 </html>

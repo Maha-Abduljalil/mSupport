@@ -49,3 +49,22 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-matcha-300 rounded-full hover:bg-matcha-400 transition-colors;
 }
+
+
+@layer components {
+  .chat-image-bubble {
+    @apply mt-2 rounded max-h-48 object-contain border border-matcha-100 cursor-pointer hover:opacity-90 transition-opacity shadow-sm;
+  }
+  
+  .lightbox-overlay {
+    @apply fixed inset-0 bg-black/90 z-[200] flex items-center justify-center backdrop-blur-sm transition-all duration-300;
+  }
+  
+  .lightbox-overlay.hidden {
+    display: none !important;
+  }
+  
+  .lightbox-image {
+    @apply max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform duration-300;
+  }
+}
